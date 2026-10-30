@@ -1,0 +1,85 @@
+% Sources for the rules in rules.py. Cite by key in docstrings, e.g. [acsm2009].
+% Add new sources here when a rule changes.
+
+@article{acsm2009,
+  author  = {{American College of Sports Medicine}},
+  title   = {Progression Models in Resistance Training for Healthy Adults},
+  journal = {Medicine \& Science in Sports \& Exercise},
+  year    = {2009},
+  volume  = {41},
+  number  = {3},
+  pages   = {687--708},
+  doi     = {10.1249/MSS.0b013e3181915670},
+  note    = {Used by step\_up\_after\_go\_up\_reps: add 2-10\% load once the
+             current load is done for 1-2 reps over the target.}
+}
+
+@article{knowles2018,
+  author  = {Knowles, Olivia E. and Drinkwater, Eric J. and Urwin, Charles S.
+             and Lamon, S{\'e}verine and Aisbett, Brad},
+  title   = {Inadequate Sleep and Muscle Strength: Implications for Resistance
+             Training},
+  journal = {Journal of Science and Medicine in Sport},
+  year    = {2018},
+  volume  = {21},
+  number  = {9},
+  pages   = {959--968},
+  doi     = {10.1016/j.jsams.2018.01.012},
+  note    = {Used by hold\_on\_short\_sleep. One night of sleep loss had little
+             effect on strength; several restricted nights lowered multi-joint
+             but not single-joint force.}
+}
+
+@article{craven2022,
+  author  = {Craven, Jonathan and McCartney, Danielle and Desbrow, Ben and
+             Sabapathy, Surendran and Bellinger, Phillip and Roberts, Llion and
+             Irwin, Christopher},
+  title   = {Effects of Acute Sleep Loss on Physical Performance: A Systematic
+             and Meta-Analytic Review},
+  journal = {Sports Medicine},
+  year    = {2022},
+  volume  = {52},
+  number  = {11},
+  pages   = {2669--2690},
+  doi     = {10.1007/s40279-022-01706-y},
+  note    = {Used by accessories\_to\_skip. Sleep loss lowers strength, but the
+             effect is small. Gives no hour cutoffs or volume cuts.}
+}
+
+@article{bell2023,
+  author  = {Bell, Lee and Strafford, Ben William and Coleman, Max and
+             Androulakis Korakakis, Patroklos and Nolan, David},
+  title   = {Integrating Deloading into Strength and Physique Sports Training
+             Programmes: An International Delphi Consensus Approach},
+  journal = {Sports Medicine - Open},
+  year    = {2023},
+  volume  = {9},
+  pages   = {87},
+  doi     = {10.1186/s40798-023-00633-0},
+  note    = {Used by drop\_weight. Coaches agreed deloads cut volume or effort
+             but gave no percentages. Trigger is fatigue, not a stall.}
+}
+
+@misc{startingstrength_reset,
+  title   = {Reset Useful? Re-doing Linear Progression},
+  howpublished = {Starting Strength forum},
+  url     = {https://startingstrength.com/resources/forum/general-programming/32207-reset-useful-re-doing-linear-progression-post479122.html},
+  note    = {Used by drop\_after\_stall. Three missed sessions, then about a
+             10\% reset. Coaching convention, not research.}
+}
+
+@misc{legion_deload,
+  title   = {Deload Guide},
+  howpublished = {Legion Athletics},
+  url     = {https://legionathletics.com/deload},
+  note    = {Used by drop\_after\_stall. Deload and reset conventions.}
+}
+
+@misc{repstack_double_progression,
+  title   = {Progressive Overload Guide},
+  howpublished = {RepStack},
+  url     = {https://repstack.pages.dev/guides/progressive-overload/},
+  note    = {Used by add\_one\_rep. Double progression: add reps at a fixed
+             weight, then add weight at the top of the range.}
+}
+

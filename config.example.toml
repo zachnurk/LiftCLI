@@ -1,0 +1,41 @@
+# Training config for plan_lift.py. Copy to config.toml and edit it.
+# config.toml is gitignored. Without it, the script uses this file.
+# Lift names must match the Exercise column in your notes exactly.
+
+# Reps that earn a weight increase, for lifts not listed in reps_to_go_up.
+default_reps_needed_to_add_weight = 7
+# Per-lift reps that earn a weight increase.
+reps_to_go_up = { "Ab Crunch" = 12 }
+
+# Weight increase in lb for isolation lifts.
+default_weight_increase_lb = 2.5
+# Lifts that use more muscle, so they take the bigger compound step.
+compound_lifts = ["Bench Press", "Lat Pulldown", "Seated Row", "Leg Press"]
+# Weight increase in lb for compound lifts.
+compound_weight_increase_lb = 5
+# Per-lift weight increase in lb. Overrides both steps above.
+# Example: { "Leg Press" = 10 }
+weight_step = {}
+
+# Share of the weight kept after a drop. 0.95 means cut 5%.
+share_of_weight_kept_after_drop = 0.95
+# Reps at or below this share of the go-up reps mean the weight is too heavy.
+share_of_go_up_reps_that_triggers_drop = 0.5
+# Sessions in a row at one weight, with no rep gain, that count as a stall.
+sessions_without_rep_gain_before_stall_drop = 3
+
+# Under this many hours of sleep, hold last weight and reps.
+sleep_hours_below_which_weight_and_reps_hold = 6
+# Accessories skipped on short sleep, first skipped first.
+drop_order = [
+    "Calf Raise",
+    "Leg Curl",
+    "Lateral Raise",
+    "Tricep Pushdown",
+    "Bicep Curl",
+]
+# Accessories to skip by sleep: [at least this many hours, skip this many].
+accessories_skipped_by_minimum_sleep_hours = [[7, 0], [6, 1], [5, 3], [0, 5]]
+
+# Hours back to look for last night's sleep records.
+hours_back_to_search_for_last_nights_sleep = 24

@@ -1,0 +1,6 @@
+.env
+config.toml
+__pycache__/
+.ruff_cache/
+.DS_Store
+TODO.md
