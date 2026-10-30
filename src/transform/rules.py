@@ -102,7 +102,8 @@ def weight_step_for(exercise):
 
 def step_up_after_go_up_reps(exercise, history, sleep_hours):
     """Hit the go-up reps (reps_to_go_up, else DEFAULT_REPS_NEEDED_TO_ADD_WEIGHT):
-    add one weight step (see weight_step_for), aim one rep fewer.
+    add one weight step (see weight_step_for), aim one rep under the go-up
+    reps, so overshooting doesn't push the next aim higher.
 
     Source: [acsm2009] for adding load once you beat the target reps. The steps
     are small (often under ACSM's 2-10%) to prevent ego lifting and strain."""
@@ -112,7 +113,7 @@ def step_up_after_go_up_reps(exercise, history, sleep_hours):
         return None
     weight_step = weight_step_for(exercise)
     today_weight = last_weight + weight_step
-    today_aim = last_reps - 1
+    today_aim = go_up_reps - 1
     return today_weight, today_aim
 
 

@@ -51,13 +51,13 @@ class TestRules(unittest.TestCase):
         self.assertEqual(plan_exercise("Bicep Curl", history, None), (30, 7, "+1 rep"))
 
     def test_isolation_lift_steps_up_2_5(self):
-        """7 reps on an isolation lift: +2.5 lb, aim one rep fewer."""
+        """7 reps on an isolation lift: +2.5 lb, aim 6."""
         self.assertEqual(
             plan_exercise("Bicep Curl", [(30, 7)], None), (32.5, 6, "step up")
         )
 
     def test_compound_lift_steps_up_5(self):
-        """7 reps on a compound lift: +5 lb, aim one rep fewer."""
+        """7 reps on a compound lift: +5 lb, aim 6."""
         self.assertEqual(
             plan_exercise("Bench Press", [(135, 7)], None), (140, 6, "step up")
         )
@@ -86,10 +86,16 @@ class TestRules(unittest.TestCase):
         history = [(70, 10), (70, 10), (70, 10)]
         self.assertEqual(plan_exercise("Ab Crunch", history, None), (67.5, 11, "stall"))
 
-    def test_step_up_past_go_up_aims_one_below_last(self):
-        """15 reps on Ab Crunch: +2.5 lb, aim 14 (last reps - 1, not 11)."""
+    def test_step_up_past_go_up_aims_one_below_go_up(self):
+        """15 reps on Ab Crunch: +2.5 lb, aim 11 (go-up 12 - 1, not 14)."""
         self.assertEqual(
-            plan_exercise("Ab Crunch", [(70, 15)], None), (72.5, 14, "step up")
+            plan_exercise("Ab Crunch", [(70, 15)], None), (72.5, 11, "step up")
+        )
+
+    def test_step_up_past_go_up_7_aims_6(self):
+        """9 reps on Bicep Curl: +2.5 lb, aim 6 (go-up 7 - 1, not 8)."""
+        self.assertEqual(
+            plan_exercise("Bicep Curl", [(30, 9)], None), (32.5, 6, "step up")
         )
 
     def test_otherwise_aim_one_more_rep(self):

@@ -3,9 +3,10 @@ the exact note it writes.
 
 Expected weights, from config.example.toml:
 - First lift stalled at 6 reps: drop 5%. 135 -> 130, 270 -> 255, 120 -> 115.
-- Second lift hit 8 reps: step up. +5 for compound lifts, +2.5 otherwise.
+- Second lift hit 8 reps: step up, aim 6 (go-up 7 - 1). +5 for compound
+  lifts, +2.5 otherwise.
 - Third lift is at 6 reps: same weight, aim 7.
-- Fullbody's Ab Crunch goes up at 12 and hit 13: +2.5, aim 12."""
+- Fullbody's Ab Crunch goes up at 12 and hit 13: +2.5, aim 11."""
 
 import shutil
 import subprocess
@@ -70,9 +71,9 @@ class TestFullbody(unittest.TestCase):
             table_rows(note_text),
             [
                 "| Bench Press | 1 | 130 | | aim 7 |",
-                "| Leg Press | 1 | 275 | | aim 7 |",
+                "| Leg Press | 1 | 275 | | aim 6 |",
                 "| Bicep Curl | 1 | 30 | | aim 7 |",
-                "| Ab Crunch | 1 | 72.5 | | aim 12 |",
+                "| Ab Crunch | 1 | 72.5 | | aim 11 |",
             ],
         )
 
@@ -85,7 +86,7 @@ class TestUpperLower(unittest.TestCase):
             table_rows(note_text),
             [
                 "| Bench Press | 1 | 130 | | aim 7 |",
-                "| Seated Row | 1 | 115 | | aim 7 |",
+                "| Seated Row | 1 | 115 | | aim 6 |",
                 "| Bicep Curl | 1 | 30 | | aim 7 |",
             ],
         )
@@ -97,7 +98,7 @@ class TestUpperLower(unittest.TestCase):
             table_rows(note_text),
             [
                 "| Leg Press | 1 | 255 | | aim 7 |",
-                "| Leg Curl | 1 | 92.5 | | aim 7 |",
+                "| Leg Curl | 1 | 92.5 | | aim 6 |",
                 "| Calf Raise | 1 | 140 | | aim 7 |",
             ],
         )
@@ -133,7 +134,7 @@ class TestPushPullLegs(unittest.TestCase):
             table_rows(note_text),
             [
                 "| Bench Press | 1 | 130 | | aim 7 |",
-                "| Shoulder Press | 1 | 87.5 | | aim 7 |",
+                "| Shoulder Press | 1 | 87.5 | | aim 6 |",
                 "| Tricep Pushdown | 1 | 50 | | aim 7 |",
             ],
         )
@@ -145,7 +146,7 @@ class TestPushPullLegs(unittest.TestCase):
             table_rows(note_text),
             [
                 "| Lat Pulldown | 1 | 115 | | aim 7 |",
-                "| Seated Row | 1 | 115 | | aim 7 |",
+                "| Seated Row | 1 | 115 | | aim 6 |",
                 "| Bicep Curl | 1 | 30 | | aim 7 |",
             ],
         )
@@ -157,7 +158,7 @@ class TestPushPullLegs(unittest.TestCase):
             table_rows(note_text),
             [
                 "| Leg Press | 1 | 255 | | aim 7 |",
-                "| Leg Curl | 1 | 92.5 | | aim 7 |",
+                "| Leg Curl | 1 | 92.5 | | aim 6 |",
                 "| Calf Raise | 1 | 140 | | aim 7 |",
             ],
         )
