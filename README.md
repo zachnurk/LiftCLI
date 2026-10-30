@@ -1,4 +1,4 @@
-# lift-planner
+# LiftCLI
 
 `src/plan_lift.py` plans today's lift from your past sessions and last night's sleep.
 It writes today's note and prints a table of what changed.

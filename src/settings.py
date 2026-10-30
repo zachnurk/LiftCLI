@@ -9,8 +9,8 @@ from pathlib import Path
 
 REPO_DIR = Path(__file__).resolve().parent.parent
 ENV_FILE_PATH = REPO_DIR / ".env"
-# LIFT_PLANNER_CONFIG points at another config file. The tests use it.
-CONFIG_FILE_PATH = Path(os.environ.get("LIFT_PLANNER_CONFIG", REPO_DIR / "config.toml"))
+# LIFTCLI_CONFIG points at another config file. The tests use it.
+CONFIG_FILE_PATH = Path(os.environ.get("LIFTCLI_CONFIG", REPO_DIR / "config.toml"))
 EXAMPLE_CONFIG_FILE_PATH = REPO_DIR / "config.example.toml"
 
 
