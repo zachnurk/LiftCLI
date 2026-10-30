@@ -1,27 +1,29 @@
 # lift-planner
 
-`plan_lift.py` plans today's lift from your past sessions and last night's sleep.
+`src/plan_lift.py` plans today's lift from your past sessions and last night's sleep.
 It writes today's note and prints a table of what changed.
 
 ## Run
 
 ```
-python3 plan_lift.py [--input-dir DIR] [--output-dir DIR] [--force]
+python3 -m src.plan_lift [--day NAME] [--sleep HOURS] [--input-dir DIR] [--output-dir DIR] [--force]
 ```
 
 | Arg | What it does |
 | --- | --- |
+| `--day` | Plan from the newest note with this `# heading`, e.g. `--day Lower`. Default: the newest note. |
+| `--sleep` | Hours slept last night. Skips Google Health and the `sleep:` property. |
 | `--input-dir` | Folder of past sessions, as `YYYY-MM/YYYY-MM-DD.md`. |
 | `--output-dir` | Folder for today's note. It goes in `YYYY-MM/` inside it. |
 | `--force` | Replace today's note if it already has a plan. |
 
-Both folders default to `LIFTING_DIR` in `.env`. Without it, both flags are
+Run it from the repo folder. Both folders default to `LIFTING_DIR` in `.env`. Without it, both flags are
 required.
 
 Try it on the sample notes:
 
 ```
-python3 plan_lift.py --input-dir examples/notes --output-dir /tmp/lift-demo
+python3 -m src.plan_lift --input-dir examples/notes --output-dir /tmp/lift-demo
 ```
 
 ## Your config
@@ -47,20 +49,41 @@ Python 3.11 or newer. No packages to install.
 
 The script finds last night's sleep in this order:
 
-1. The Google Health API, if `.env` works and sleep has synced.
-2. The `sleep:` property in today's note, in hours (for example `sleep: 6.5`).
+1. The `--sleep` flag, if given.
+2. The Google Health API, if `.env` works and sleep has synced.
+3. The `sleep:` property in today's note, in hours (for example `sleep: 6.5`).
    No Fitbit? Create today's note with just that property, then run the script.
-3. Neither? The script skips the sleep rules and plans from weight and reps.
+4. None of these? The script skips the sleep rules and plans from weight and reps.
 
 It writes the hours it used into the `sleep:` property of today's note.
 
 ## Notes
 
 Each note is a markdown table with the columns Exercise, Set, Weight, Reps, and
-RIR. Properties are `start:`, `end:`, and `sleep:`.
+RIR. Properties are `start:`, `end:`, and `sleep:`. The `# heading` names the
+day (`# Fullbody`, `# Upper`, `# Push`).
 
-- **Exercise order** comes from your newest note. To add, drop, or reorder a
-  lift, edit that note. There is no split list.
+All notes go in one folder, one subfolder per month:
+
+```
+lifting/
+  2026-09/
+    2026-09-29.md
+  2026-10/
+    2026-10-01.md
+    2026-10-03.md
+```
+
+Other layouts, like one folder per split day, aren't read.
+
+- **Exercise order** comes from your newest note, or with `--day` the newest
+  note with that heading. To add, drop, or reorder a lift, edit that note.
+  There is no split list.
+- **Sets**: the rules run on each lift's first set. Later sets copy its
+  weight and aim (straight sets), and the chat table shows one row per lift.
+- **Splits** work by heading. Run `--day Lower` on lower days. A lift's
+  history comes only from notes that have it, so an Upper lift's stall check
+  skips the Lower days in between.
 - **The note column** is yours. The script reads only weight and reps, and writes
   `aim N` in that column.
 - **A new exercise** with no logged weight shows `?` and the rule "no history".
@@ -92,3 +115,5 @@ docstring.
 | `src/write/` | Writes today's note and prints the table. |
 | `src/settings.py` | Loads `config.toml` and `.env`. Don't edit it. |
 | `examples/notes/` | Made-up notes for trying the script. |
+| `test/` | Rule, note-reading, and end-to-end tests. Run `python3 -m unittest`. They always use `config.example.toml`. |
+| `test_files/` | Notes for each split (fullbody, upper/lower, push/pull/legs) that the end-to-end tests plan from. |

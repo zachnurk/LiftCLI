@@ -3,6 +3,7 @@
 
 def write_note(
     today_note_path,
+    day_heading,
     note_rows,
     sleep_hours,
     skipped_exercises,
@@ -23,7 +24,7 @@ def write_note(
         f"sleep: {'' if sleep_hours is None else f'{sleep_hours:g}'}",
         "---",
         "",
-        "# Fullbody",
+        f"# {day_heading}",
         "",
         *note_rows,
         "",

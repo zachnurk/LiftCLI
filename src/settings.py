@@ -3,12 +3,14 @@ Training numbers live in config.toml (copy config.example.toml to start one).
 Machine-specific values (Google Health credentials, LIFTING_DIR) live in .env
 (copy .env.example). Both are gitignored."""
 
+import os
 import tomllib
 from pathlib import Path
 
 REPO_DIR = Path(__file__).resolve().parent.parent
 ENV_FILE_PATH = REPO_DIR / ".env"
-CONFIG_FILE_PATH = REPO_DIR / "config.toml"
+# LIFT_PLANNER_CONFIG points at another config file. The tests use it.
+CONFIG_FILE_PATH = Path(os.environ.get("LIFT_PLANNER_CONFIG", REPO_DIR / "config.toml"))
 EXAMPLE_CONFIG_FILE_PATH = REPO_DIR / "config.example.toml"
 
 
