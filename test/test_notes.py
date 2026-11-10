@@ -10,7 +10,11 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from src.extract.lift_notes import read_lift_history
+from src.extract.lift_notes import (
+    read_adjustments,
+    read_lift_history,
+    read_lift_rows,
+)
 
 TEST_FILES_DIR = Path(__file__).resolve().parent.parent / "test_files"
 TODAY = "2026-11-01"
@@ -160,6 +164,25 @@ class TestEdgeCases(unittest.TestCase):
         self.assertEqual(exercise_order, [("Calf Raise", 1), ("Leg Curl", 1)])
         self.assertEqual(history_by_row[("Calf Raise", 1)], [(140, 6)])
         self.assertEqual(history_by_row[("Leg Curl", 1)], [(90, 6)])
+
+    def test_adjustment_comes_from_column_or_name_suffix(self):
+        """The Adj. column wins; an older "(7)" after the name moves to Adj."""
+        note_text = (
+            "| Incline press Yellow (7) | 1 | 170 | 9 | |\n"
+            "| Pec Deck | 1 | 220 | 4 | 1 | seat 3 | aim 6 |\n"
+            "| Leg Curl | 1 | 205 | 6 | 1 | | aim 7 |\n"
+        )
+        self.assertEqual(
+            read_adjustments(note_text),
+            {("Incline press Yellow", 1): "7", ("Pec Deck", 1): "seat 3"},
+        )
+
+    def test_letters_stuck_to_numbers_are_skipped(self):
+        """A typo like "a87.5" still reads as 87.5, and "6x" as 6 reps."""
+        self.assertEqual(
+            read_lift_rows("| Forearm cable curl | 1 | a87.5 | 6x | |\n"),
+            [(("Forearm cable curl", 1), "87.5", "6", "")],
+        )
 
 
 if __name__ == "__main__":

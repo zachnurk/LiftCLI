@@ -14,6 +14,7 @@ from pathlib import Path
 
 from src.extract.google_health import fetch_sleep_hours
 from src.extract.lift_notes import (
+    read_adjustments,
     read_day_heading,
     read_lift_history,
     read_sleep_property,
@@ -72,7 +73,8 @@ if template_note_path is None:
     sys.exit(f"No past note in {input_dir} has the heading # {parsed_arguments.day}.")
 if not exercise_order:
     sys.exit(f"{template_note_path} has no exercise rows to plan from.")
-day_heading = read_day_heading(template_note_path.read_text()) or "Lift"
+template_note_text = template_note_path.read_text()
+day_heading = read_day_heading(template_note_text) or "Lift"
 sleep_hours = parsed_arguments.sleep
 sleep_source = "--sleep"
 if sleep_hours is None:
@@ -87,7 +89,7 @@ else:
     print(f"Sleep: {sleep_hours:g}h from {sleep_source}.")
 
 note_rows, report_rows, skipped_exercises, go_easy = build_plan(
-    history_by_row, exercise_order, sleep_hours
+    history_by_row, exercise_order, sleep_hours, read_adjustments(template_note_text)
 )
 
 write_note(

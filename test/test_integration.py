@@ -70,10 +70,10 @@ class TestFullbody(unittest.TestCase):
         self.assertEqual(
             table_rows(note_text),
             [
-                "| Bench Press | 1 | 130 | | aim 7 |",
-                "| Leg Press | 1 | 275 | | aim 6 |",
-                "| Bicep Curl | 1 | 30 | | aim 7 |",
-                "| Ab Crunch | 1 | 72.5 | | aim 11 |",
+                "| Bench Press | 1 | 130 | | | | aim 7 |",
+                "| Leg Press | 1 | 275 | | | | aim 6 |",
+                "| Bicep Curl | 1 | 30 | | | | aim 7 |",
+                "| Ab Crunch | 1 | 72.5 | | | | aim 11 |",
             ],
         )
 
@@ -85,9 +85,9 @@ class TestUpperLower(unittest.TestCase):
         self.assertEqual(
             table_rows(note_text),
             [
-                "| Bench Press | 1 | 130 | | aim 7 |",
-                "| Seated Row | 1 | 115 | | aim 6 |",
-                "| Bicep Curl | 1 | 30 | | aim 7 |",
+                "| Bench Press | 1 | 130 | | | | aim 7 |",
+                "| Seated Row | 1 | 115 | | | | aim 6 |",
+                "| Bicep Curl | 1 | 30 | | | | aim 7 |",
             ],
         )
 
@@ -97,9 +97,9 @@ class TestUpperLower(unittest.TestCase):
         self.assertEqual(
             table_rows(note_text),
             [
-                "| Leg Press | 1 | 255 | | aim 7 |",
-                "| Leg Curl | 1 | 92.5 | | aim 6 |",
-                "| Calf Raise | 1 | 140 | | aim 7 |",
+                "| Leg Press | 1 | 255 | | | | aim 7 |",
+                "| Leg Curl | 1 | 92.5 | | | | aim 6 |",
+                "| Calf Raise | 1 | 140 | | | | aim 7 |",
             ],
         )
 
@@ -114,7 +114,7 @@ class TestUpperLower(unittest.TestCase):
             "upper_lower", "--day", "Upper"
         )
         today_note_path.write_text(
-            note_text.replace("| 130 | | aim 7 |", "| 130 | 7 | 1 |")
+            note_text.replace("| 130 | | | | aim 7 |", "| 130 | 7 | 1 | | |")
         )
         tomorrow = (datetime.now().astimezone().date() + timedelta(days=1)).isoformat()
         history_by_row, _, _, template_note_path = read_lift_history(
@@ -133,9 +133,9 @@ class TestPushPullLegs(unittest.TestCase):
         self.assertEqual(
             table_rows(note_text),
             [
-                "| Bench Press | 1 | 130 | | aim 7 |",
-                "| Shoulder Press | 1 | 87.5 | | aim 6 |",
-                "| Tricep Pushdown | 1 | 50 | | aim 7 |",
+                "| Bench Press | 1 | 130 | | | | aim 7 |",
+                "| Shoulder Press | 1 | 87.5 | | | | aim 6 |",
+                "| Tricep Pushdown | 1 | 50 | | | | aim 7 |",
             ],
         )
 
@@ -145,9 +145,9 @@ class TestPushPullLegs(unittest.TestCase):
         self.assertEqual(
             table_rows(note_text),
             [
-                "| Lat Pulldown | 1 | 115 | | aim 7 |",
-                "| Seated Row | 1 | 115 | | aim 6 |",
-                "| Bicep Curl | 1 | 30 | | aim 7 |",
+                "| Lat Pulldown | 1 | 115 | | | | aim 7 |",
+                "| Seated Row | 1 | 115 | | | | aim 6 |",
+                "| Bicep Curl | 1 | 30 | | | | aim 7 |",
             ],
         )
 
@@ -157,9 +157,9 @@ class TestPushPullLegs(unittest.TestCase):
         self.assertEqual(
             table_rows(note_text),
             [
-                "| Leg Press | 1 | 255 | | aim 7 |",
-                "| Leg Curl | 1 | 92.5 | | aim 6 |",
-                "| Calf Raise | 1 | 140 | | aim 7 |",
+                "| Leg Press | 1 | 255 | | | | aim 7 |",
+                "| Leg Curl | 1 | 92.5 | | | | aim 6 |",
+                "| Calf Raise | 1 | 140 | | | | aim 7 |",
             ],
         )
 
@@ -176,9 +176,9 @@ class TestShortSleep(unittest.TestCase):
         self.assertEqual(
             table_rows(note_text),
             [
-                "| Leg Press | 1 | 270 | | aim 6 |",
-                "| Leg Curl | 1 | 0 | | skipped |",
-                "| Calf Raise | 1 | 0 | | skipped |",
+                "| Leg Press | 1 | 270 | | | | aim 6 |",
+                "| Leg Curl | 1 | 0 | | | | skipped |",
+                "| Calf Raise | 1 | 0 | | | | skipped |",
             ],
         )
 

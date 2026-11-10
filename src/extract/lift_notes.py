@@ -4,9 +4,18 @@ import re
 
 from src.settings import SESSIONS_WITHOUT_REP_GAIN_BEFORE_STALL_DROP
 
+# Exercise | Set | Weight | Reps | RIR, then an optional Adj. column. Older
+# notes have only the first five columns. Stray letters stuck to a weight or
+# reps number are typos and skipped, so "a87.5" reads as 87.5.
 LIFT_ROW_PATTERN = re.compile(
-    r"^\|([^|]+)\|\s*(\d+)\s*\|\s*([\d.]*)\s*\|\s*(\d*)\s*\|([^|]*)\|", re.MULTILINE
+    r"^\|([^|]+)\|\s*(\d+)\s*"
+    r"\|\s*[A-Za-z]*([\d.]*)[A-Za-z]*\s*"
+    r"\|\s*[A-Za-z]*(\d*)[A-Za-z]*\s*"
+    r"\|[^|]*\|(?:([^|\n]*)\|)?",
+    re.MULTILINE,
 )
+# Machine setting written after the name in older notes, e.g. "Incline (7)".
+EXERCISE_ADJUSTMENT_SUFFIX_PATTERN = re.compile(r"^(.*?)\s*\(([^)]*)\)$")
 # Frontmatter line holding hours slept, e.g. "sleep: 7.2".
 SLEEP_PROPERTY_PATTERN = re.compile(r"^sleep:\s*([\d.]+)\s*$", re.MULTILINE)
 # The note's day name, e.g. "# Upper".
@@ -16,14 +25,38 @@ END_TIME_ROW_EXERCISE = "Jot End Time"
 
 
 def read_lift_rows(note_text):
-    """Return the note's exercise rows as ((exercise, set number), weight, reps),
-    with weight and reps as strings, blank if not logged."""
+    """Return the note's exercise rows as ((exercise, set number), weight, reps,
+    adjustment), all strings, blank if not logged. The adjustment comes from the
+    Adj. column, or from a "(7)" after the name in older notes, which is then
+    cut from the name."""
     lift_rows = []
-    for exercise, set_number, weight, reps, _ in LIFT_ROW_PATTERN.findall(note_text):
-        row_key = (exercise.strip(), int(set_number))
-        if row_key[0] != END_TIME_ROW_EXERCISE:
-            lift_rows.append((row_key, weight, reps))
+    for (
+        exercise,
+        set_number,
+        weight,
+        reps,
+        adjustment,
+    ) in LIFT_ROW_PATTERN.findall(note_text):
+        exercise_name = exercise.strip()
+        adjustment = adjustment.strip()
+        suffix_match = EXERCISE_ADJUSTMENT_SUFFIX_PATTERN.match(exercise_name)
+        if suffix_match:
+            exercise_name = suffix_match.group(1)
+            adjustment = adjustment or suffix_match.group(2).strip()
+        if exercise_name != END_TIME_ROW_EXERCISE:
+            lift_rows.append(
+                ((exercise_name, int(set_number)), weight, reps, adjustment)
+            )
     return lift_rows
+
+
+def read_adjustments(note_text):
+    """Return {(exercise, set number): adjustment} for rows that have one."""
+    return {
+        row_key: adjustment
+        for row_key, _, _, adjustment in read_lift_rows(note_text)
+        if adjustment
+    }
 
 
 def read_day_heading(note_text):
@@ -61,11 +94,11 @@ def read_lift_history(today, input_dir, day_name=None):
     if template_note_path is None:
         return {}, [], past_note_paths, None
     exercise_order = [
-        row_key for row_key, _, _ in read_lift_rows(template_note_path.read_text())
+        row_key for row_key, _, _, _ in read_lift_rows(template_note_path.read_text())
     ]
     history_by_row = {}
     for note_path in past_note_paths:
-        for row_key, weight, reps in read_lift_rows(note_path.read_text()):
+        for row_key, weight, reps, _ in read_lift_rows(note_path.read_text()):
             if weight and reps and float(weight) > 0 and int(reps) > 0:
                 history_by_row.setdefault(row_key, []).append(
                     (float(weight), int(reps))

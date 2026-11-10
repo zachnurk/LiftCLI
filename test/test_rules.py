@@ -133,24 +133,26 @@ class TestRules(unittest.TestCase):
         """Set 1 hit 7 reps, set 2 only 3. Both sets get set 1's step up."""
         history_by_row = {("Bicep Curl", 1): [(30, 7)], ("Bicep Curl", 2): [(30, 3)]}
         exercise_order = [("Bicep Curl", 1), ("Bicep Curl", 2)]
-        note_rows, report_rows, _, _ = build_plan(history_by_row, exercise_order, None)
-        self.assertEqual(note_rows[2], "| Bicep Curl | 1 | 32.5 | | aim 6 |")
-        self.assertEqual(note_rows[3], "| Bicep Curl | 2 | 32.5 | | aim 6 |")
+        note_rows, report_rows, _, _ = build_plan(
+            history_by_row, exercise_order, None, {}
+        )
+        self.assertEqual(note_rows[2], "| Bicep Curl | 1 | 32.5 | | | | aim 6 |")
+        self.assertEqual(note_rows[3], "| Bicep Curl | 2 | 32.5 | | | | aim 6 |")
         self.assertEqual(len(report_rows), 1)
 
     def test_lift_with_no_history_asks_for_a_weight(self):
         """A new lift has no weight to plan from."""
-        note_rows, _, _, _ = build_plan({}, [("Bicep Curl", 1)], None)
-        self.assertEqual(note_rows[2], "| Bicep Curl | 1 | | | pick a weight |")
+        note_rows, _, _, _ = build_plan({}, [("Bicep Curl", 1)], None, {})
+        self.assertEqual(note_rows[2], "| Bicep Curl | 1 | | | | | pick a weight |")
 
     def test_skipped_accessory_is_written_as_skipped(self):
         """Under 7 h, Calf Raise is skipped."""
         history_by_row = {("Calf Raise", 1): [(140, 6)]}
         note_rows, _, skipped_exercises, _ = build_plan(
-            history_by_row, [("Calf Raise", 1)], 6.5
+            history_by_row, [("Calf Raise", 1)], 6.5, {}
         )
         self.assertEqual(skipped_exercises, ["Calf Raise"])
-        self.assertEqual(note_rows[2], "| Calf Raise | 1 | 0 | | skipped |")
+        self.assertEqual(note_rows[2], "| Calf Raise | 1 | 0 | | | | skipped |")
 
 
 if __name__ == "__main__":

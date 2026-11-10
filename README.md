@@ -59,8 +59,8 @@ It writes the hours it used into the `sleep:` property of today's note.
 
 ## Notes
 
-Each note is a markdown table with the columns Exercise, Set, Weight, Reps, and
-RIR. Properties are `start:`, `end:`, and `sleep:`. The `# heading` names the
+Each note is a markdown table with the columns Exercise, Set, Weight, Reps,
+RIR, Adj., and Notes. Properties are `start:`, `end:`, and `sleep:`. The `# heading` names the
 day (`# Fullbody`, `# Upper`, `# Push`).
 
 All notes go in one folder, one subfolder per month:
@@ -84,8 +84,11 @@ Other layouts, like one folder per split day, aren't read.
 - **Splits** work by heading. Run `--day Lower` on lower days. A lift's
   history comes only from notes that have it, so an Upper lift's stall check
   skips the Lower days in between.
-- **The note column** is yours. The script reads only weight and reps, and writes
-  `aim N` in that column.
+- **RIR and Notes** are yours. The script reads only weight, reps, and Adj.,
+  leaves RIR blank, and writes `aim N` in Notes.
+- **Adj.** holds machine settings like seat height. It carries over from the
+  note you plan from. Older notes with a setting after the name, like
+  `Incline press (7)`, get it moved into Adj.
 - **A new exercise** with no logged weight shows `?` and the rule "no history".
   Pick a starting weight yourself.
 

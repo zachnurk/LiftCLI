@@ -44,9 +44,10 @@ def plan_exercise(exercise, history, sleep_hours):
     return *plan, "+1 rep"
 
 
-def build_plan(history_by_row, exercise_order, sleep_hours):
+def build_plan(history_by_row, exercise_order, sleep_hours, adjustment_by_row):
     """Return (note_rows, report_rows, skipped_exercises, go_easy).
-    note_rows are markdown table lines for the note. report_rows are
+    note_rows are markdown table lines for the note: RIR is left blank to log,
+    Adj. carries over from adjustment_by_row, and Notes holds the aim. report_rows are
     (exercise, weight with arrow, last, aim, rule) for the chat table, one per
     exercise. The rules run on each exercise's first set only. Later sets copy
     its weight and aim (straight sets)."""
@@ -56,27 +57,28 @@ def build_plan(history_by_row, exercise_order, sleep_hours):
         and sleep_hours < SLEEP_HOURS_BELOW_WHICH_WEIGHT_AND_REPS_HOLD
     )
     note_rows = [
-        "| Exercise | Set | Weight | Reps | RIR |",
-        "| --- | --- | --- | --- | --- |",
+        "| Exercise | Set | Weight | Reps | RIR | Adj. | Notes |",
+        "| --- | --- | --- | --- | --- | --- | --- |",
     ]
     report_rows = []
-    first_set_cells_by_exercise = {}
+    weight_and_notes_by_exercise = {}
     for exercise, set_number in exercise_order:
-        if exercise not in first_set_cells_by_exercise:
+        if exercise not in weight_and_notes_by_exercise:
             history = history_by_row.get((exercise, set_number))
             if exercise in skipped_exercises:
-                first_set_cells_by_exercise[exercise] = "0 | | skipped"
+                weight_and_notes_by_exercise[exercise] = ("0", "skipped")
                 report_rows.append((exercise, "skip", "", "", "sleep"))
             elif not history:
-                first_set_cells_by_exercise[exercise] = "| | pick a weight"
+                weight_and_notes_by_exercise[exercise] = ("", "pick a weight")
                 report_rows.append((exercise, "?", "none", "", "no history"))
             else:
                 last_weight, last_reps = history[0]
                 today_weight, today_aim, rule_label = plan_exercise(
                     exercise, history, sleep_hours
                 )
-                first_set_cells_by_exercise[exercise] = (
-                    f"{today_weight:g} | | aim {today_aim}"
+                weight_and_notes_by_exercise[exercise] = (
+                    f"{today_weight:g}",
+                    f"aim {today_aim}",
                 )
                 weight_arrow = arrow_for_change(last_weight, today_weight)
                 report_rows.append(
@@ -88,10 +90,21 @@ def build_plan(history_by_row, exercise_order, sleep_hours):
                         rule_label,
                     )
                 )
+        weight_cell, notes_cell = weight_and_notes_by_exercise[exercise]
+        adjustment_cell = adjustment_by_row.get((exercise, set_number), "")
+        row_cells = [
+            exercise,
+            str(set_number),
+            weight_cell,
+            "",
+            "",
+            adjustment_cell,
+            notes_cell,
+        ]
         note_rows.append(
-            f"| {exercise} | {set_number} | {first_set_cells_by_exercise[exercise]} |"
+            "|" + "|".join(f" {cell} " if cell else " " for cell in row_cells) + "|"
         )
     note_rows.append(
-        "| Jot End Time | 1 | 100 | | JOT END (leave reps empty so i see it) |"
+        "| Jot End Time | 1 | 100 | | | | JOT END (leave reps empty so i see it) |"
     )
     return note_rows, report_rows, skipped_exercises, go_easy
