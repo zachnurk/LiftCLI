@@ -9,12 +9,11 @@ from src.settings import (
     ACCESSORIES_SKIPPED_BY_MINIMUM_SLEEP_HOURS,
     COMPOUND_LIFTS,
     COMPOUND_WEIGHT_INCREASE_LB,
-    DEFAULT_REPS_NEEDED_TO_ADD_WEIGHT,
+    DEFAULT_REP_RANGE,
     DEFAULT_WEIGHT_INCREASE_LB,
     DROP_ORDER,
-    REPS_TO_GO_UP,
+    REP_RANGE,
     SESSIONS_WITHOUT_REP_GAIN_BEFORE_STALL_DROP,
-    SHARE_OF_GO_UP_REPS_THAT_TRIGGERS_DROP,
     SHARE_OF_WEIGHT_KEPT_AFTER_DROP,
     SLEEP_HOURS_BELOW_WHICH_WEIGHT_AND_REPS_HOLD,
     WEIGHT_STEP,
@@ -53,17 +52,22 @@ def hold_on_short_sleep(exercise, history, sleep_hours):
     return last_weight, last_reps
 
 
-def drop_when_reps_far_below_range(exercise, history, sleep_hours):
-    """Last set reached SHARE_OF_GO_UP_REPS_THAT_TRIGGERS_DROP of the go-up reps
-    or fewer: drop the weight, aim last reps + 1. Adapts to each lift's
-    reps_to_go_up.
+def rep_range_for(exercise):
+    """The lift's [bottom, top] reps: its rep_range entry if it has one, else
+    DEFAULT_REP_RANGE. Reaching the top adds weight. Falling below the bottom
+    drops it."""
+    return REP_RANGE.get(exercise, DEFAULT_REP_RANGE)
 
-        go-up 7:   drop at 3 reps or fewer
-        go-up 12:  drop at 6 reps or fewer"""
+
+def drop_when_reps_below_range(exercise, history, sleep_hours):
+    """Last set fell below the bottom of the lift's rep range: drop the weight,
+    aim last reps + 1.
+
+        range 4-7:   drop at 3 reps or fewer
+        range 7-12:  drop at 6 reps or fewer"""
     last_weight, last_reps = history[0]
-    go_up_reps = REPS_TO_GO_UP.get(exercise, DEFAULT_REPS_NEEDED_TO_ADD_WEIGHT)
-    too_few_reps = go_up_reps * SHARE_OF_GO_UP_REPS_THAT_TRIGGERS_DROP
-    if last_reps > too_few_reps:
+    rep_range_bottom, _ = rep_range_for(exercise)
+    if last_reps >= rep_range_bottom:
         return None
     return drop_weight(exercise, last_weight), last_reps + 1
 
@@ -100,20 +104,20 @@ def weight_step_for(exercise):
     return DEFAULT_WEIGHT_INCREASE_LB
 
 
-def step_up_after_go_up_reps(exercise, history, sleep_hours):
-    """Hit the go-up reps (reps_to_go_up, else DEFAULT_REPS_NEEDED_TO_ADD_WEIGHT):
-    add one weight step (see weight_step_for), aim one rep under the go-up
-    reps, so overshooting doesn't push the next aim higher.
+def step_up_at_top_of_range(exercise, history, sleep_hours):
+    """Reached the top of the lift's rep range (see rep_range_for): add one
+    weight step (see weight_step_for), aim one rep under the top, so
+    overshooting doesn't push the next aim higher.
 
     Source: [acsm2009] for adding load once you beat the target reps. The steps
     are small (often under ACSM's 2-10%) to prevent ego lifting and strain."""
     last_weight, last_reps = history[0]
-    go_up_reps = REPS_TO_GO_UP.get(exercise, DEFAULT_REPS_NEEDED_TO_ADD_WEIGHT)
-    if last_reps < go_up_reps:
+    _, rep_range_top = rep_range_for(exercise)
+    if last_reps < rep_range_top:
         return None
     weight_step = weight_step_for(exercise)
     today_weight = last_weight + weight_step
-    today_aim = go_up_reps - 1
+    today_aim = rep_range_top - 1
     return today_weight, today_aim
 
 

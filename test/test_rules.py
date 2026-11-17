@@ -1,5 +1,5 @@
 """Tests each overload rule, the sleep skips, and set handling.
-Numbers come from config.example.toml: go up at 7 reps, +2.5 lb for isolation
+Numbers come from config.example.toml: rep range 4-7, +2.5 lb for isolation
 lifts, +5 lb for compound lifts (Bench Press, Lat Pulldown, Seated Row, Leg
 Press), drops keep 95%, stall after 3 sessions, hold under 6 h of sleep."""
 
@@ -24,13 +24,13 @@ class TestRules(unittest.TestCase):
         )
 
     def test_too_few_reps_drops_weight(self):
-        """3 reps is at or below half of 7: drop 5%, rounded to the 2.5 step."""
+        """3 reps is below the 4-7 range: drop 5%, rounded to the 2.5 step."""
         self.assertEqual(
             plan_exercise("Bicep Curl", [(30, 3)], None), (27.5, 4, "too few reps")
         )
 
     def test_four_reps_is_not_too_few(self):
-        """4 reps is above half of 7, so no drop."""
+        """4 reps is the bottom of the 4-7 range, so no drop."""
         self.assertEqual(
             plan_exercise("Bicep Curl", [(30, 4)], None), (30, 5, "+1 rep")
         )
@@ -62,8 +62,8 @@ class TestRules(unittest.TestCase):
             plan_exercise("Bench Press", [(135, 7)], None), (140, 6, "step up")
         )
 
-    def test_per_lift_go_up_reps(self):
-        """Ab Crunch goes up at 12 reps, not 7."""
+    def test_per_lift_rep_range_top(self):
+        """Ab Crunch (range 7-12) goes up at 12 reps, not 7."""
         self.assertEqual(
             plan_exercise("Ab Crunch", [(70, 11)], None), (70, 12, "+1 rep")
         )
@@ -71,35 +71,35 @@ class TestRules(unittest.TestCase):
             plan_exercise("Ab Crunch", [(70, 12)], None), (72.5, 11, "step up")
         )
 
-    def test_too_few_reps_at_go_up_12(self):
-        """Ab Crunch goes up at 12, so 6 reps (half of 12) is too few."""
+    def test_too_few_reps_below_range_7_to_12(self):
+        """Ab Crunch range is 7-12, so 6 reps is too few."""
         self.assertEqual(
             plan_exercise("Ab Crunch", [(70, 6)], None), (67.5, 7, "too few reps")
         )
 
-    def test_seven_reps_is_not_too_few_at_go_up_12(self):
-        """7 reps is above half of 12, so no drop."""
+    def test_seven_reps_is_not_too_few_in_range_7_to_12(self):
+        """7 reps is the bottom of the 7-12 range, so no drop."""
         self.assertEqual(plan_exercise("Ab Crunch", [(70, 7)], None), (70, 8, "+1 rep"))
 
-    def test_stall_at_go_up_12(self):
+    def test_stall_in_range_7_to_12(self):
         """3 sessions stuck at 10 reps: drop 5%, aim 11."""
         history = [(70, 10), (70, 10), (70, 10)]
         self.assertEqual(plan_exercise("Ab Crunch", history, None), (67.5, 11, "stall"))
 
-    def test_step_up_past_go_up_aims_one_below_go_up(self):
-        """15 reps on Ab Crunch: +2.5 lb, aim 11 (go-up 12 - 1, not 14)."""
+    def test_step_up_past_top_aims_one_below_top(self):
+        """15 reps on Ab Crunch: +2.5 lb, aim 11 (top 12 - 1, not 14)."""
         self.assertEqual(
             plan_exercise("Ab Crunch", [(70, 15)], None), (72.5, 11, "step up")
         )
 
-    def test_step_up_past_go_up_7_aims_6(self):
-        """9 reps on Bicep Curl: +2.5 lb, aim 6 (go-up 7 - 1, not 8)."""
+    def test_step_up_past_top_7_aims_6(self):
+        """9 reps on Bicep Curl: +2.5 lb, aim 6 (top 7 - 1, not 8)."""
         self.assertEqual(
             plan_exercise("Bicep Curl", [(30, 9)], None), (32.5, 6, "step up")
         )
 
     def test_otherwise_aim_one_more_rep(self):
-        """Below the go-up reps with nothing wrong: same weight, one more rep."""
+        """Inside the rep range with nothing wrong: same weight, one more rep."""
         self.assertEqual(
             plan_exercise("Bicep Curl", [(30, 5)], None), (30, 6, "+1 rep")
         )

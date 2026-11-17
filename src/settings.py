@@ -48,16 +48,13 @@ LIFTING_DIR = (
     else None
 )
 
-DEFAULT_REPS_NEEDED_TO_ADD_WEIGHT = CONFIG_VALUES["default_reps_needed_to_add_weight"]
-REPS_TO_GO_UP = CONFIG_VALUES["reps_to_go_up"]
+DEFAULT_REP_RANGE = CONFIG_VALUES["default_rep_range"]
+REP_RANGE = CONFIG_VALUES["rep_range"]
 DEFAULT_WEIGHT_INCREASE_LB = CONFIG_VALUES["default_weight_increase_lb"]
 COMPOUND_LIFTS = CONFIG_VALUES["compound_lifts"]
 COMPOUND_WEIGHT_INCREASE_LB = CONFIG_VALUES["compound_weight_increase_lb"]
 WEIGHT_STEP = CONFIG_VALUES["weight_step"]
 SHARE_OF_WEIGHT_KEPT_AFTER_DROP = CONFIG_VALUES["share_of_weight_kept_after_drop"]
-SHARE_OF_GO_UP_REPS_THAT_TRIGGERS_DROP = CONFIG_VALUES[
-    "share_of_go_up_reps_that_triggers_drop"
-]
 SESSIONS_WITHOUT_REP_GAIN_BEFORE_STALL_DROP = CONFIG_VALUES[
     "sessions_without_rep_gain_before_stall_drop"
 ]

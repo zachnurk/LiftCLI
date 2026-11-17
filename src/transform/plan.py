@@ -6,9 +6,9 @@ from src.transform.rules import (
     accessories_to_skip,
     add_one_rep,
     drop_after_stall,
-    drop_when_reps_far_below_range,
+    drop_when_reps_below_range,
     hold_on_short_sleep,
-    step_up_after_go_up_reps,
+    step_up_at_top_of_range,
 )
 
 
@@ -28,7 +28,7 @@ def plan_exercise(exercise, history, sleep_hours):
     if plan:
         return *plan, "short sleep"
 
-    plan = drop_when_reps_far_below_range(exercise, history, sleep_hours)
+    plan = drop_when_reps_below_range(exercise, history, sleep_hours)
     if plan:
         return *plan, "too few reps"
 
@@ -36,7 +36,7 @@ def plan_exercise(exercise, history, sleep_hours):
     if plan:
         return *plan, "stall"
 
-    plan = step_up_after_go_up_reps(exercise, history, sleep_hours)
+    plan = step_up_at_top_of_range(exercise, history, sleep_hours)
     if plan:
         return *plan, "step up"
 
