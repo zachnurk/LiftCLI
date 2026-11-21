@@ -101,7 +101,7 @@ one that returns a plan wins.
 | --- | --- | --- |
 | short sleep | Sleep under the cutoff | Holds last weight and reps |
 | too few reps | Reps at or below half the go-up reps | Drops 5% |
-| stall | 3 sessions at one weight with no rep gain | Drops 5% |
+| stall | 5 sessions at one weight with no rep gain | Drops 5% |
 | step up | Reps hit the go-up reps | Adds one step: 5 lb for `compound_lifts`, else 2.5 |
 | +1 rep | Anything else | Aims for one more rep |
 
